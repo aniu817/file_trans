@@ -7,13 +7,17 @@
 
 import xlrd
 
+from exception.defined_exception import DefinedException
 from tools.extract_tool import ExtractTool
 from tools.index_tool import IndexTool
 import pandas as pd
+
+from tools.logging_tool import LoggingTool
 from tools.path_tool import PathTool
 
 
 class TransTool:
+    file_logger = LoggingTool.get_logger(__name__)
 
     @staticmethod
     def trans(file, sheet_name, info_cnt):
@@ -23,6 +27,7 @@ class TransTool:
         :param info_cnt: 基础信息行数
         :return:
         """
+
         output = pd.DataFrame()
 
         work_book = xlrd.open_workbook(file)
@@ -63,9 +68,9 @@ class TransTool:
 
         try:
             output.to_excel(PathTool.out_path(file), index=False)
-            print('写入完成')
-        except:
-            print('文件持久化错误...')
+            TransTool.file_logger.info('保存到 ' + file + '成功...')
+        except DefinedException:
+            TransTool.file_logger.error('保存到 ' + file + '失败...')
 
 
 if __name__ == "__main__":

@@ -6,8 +6,11 @@
 
 import numpy as np
 
+from tools.logging_tool import LoggingTool
+
 
 class IndexTool:
+    _file_logger = LoggingTool.get_logger(__name__)
 
     @staticmethod
     def get_row_index(sheet_data,
@@ -51,18 +54,22 @@ class IndexTool:
                 if name == '员工刷卡记录表':
                     start_date = date_str[5:15]
                     end_date = date_str[16:26]
+                    IndexTool._file_logger.info('开始时间 = ' + start_date + '...结束时间 = ' + end_date)
                     return start_date, end_date
                 elif name == '刷卡记录':
                     start_date = date_str[5:15]
                     end_date = date_str[5:9] + '-' + date_str[16:21]
+                    IndexTool._file_logger.info('开始时间 = ' + start_date + '...结束时间 = ' + end_date)
                     return start_date, end_date
                 elif name == '考勤记录':
                     start_date = date_str[4:14]
                     end_date = date_str[15:25]
+                    IndexTool._file_logger.info('开始时间 = ' + start_date + '...结束时间 = ' + end_date)
                     return start_date, end_date
                 elif name == '刷卡记录表':
                     start_date = date_str[5:15]
                     end_date = date_str[5:9] + '-' + date_str[16:21]
+                    IndexTool._file_logger.info('开始时间 = ' + start_date + '...结束时间 = ' + end_date)
                     return start_date, end_date
 
 

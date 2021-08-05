@@ -6,8 +6,11 @@
 
 import pandas as pd
 
+from tools.logging_tool import LoggingTool
+
 
 class ExtractTool:
+    _file_logger = LoggingTool.get_logger(__name__)
 
     @staticmethod
     def get_info(df_info):
@@ -21,7 +24,7 @@ class ExtractTool:
         try:
             return df_info.iloc[0][1], df_info.iloc[0][3]
         except:
-            print('姓名为空')
+            ExtractTool._file_logger.warn('姓名或者工号有空...')
             return '', ''
 
     @staticmethod
