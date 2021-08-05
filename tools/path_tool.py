@@ -6,8 +6,8 @@ class PathTool:
 
     @staticmethod
     def get_project_dir():
-        return os.path.abspath(os.path.dirname(os.getcwd()))
-        # return os.path.abspath(os.path.join(os.getcwd()))
+        # return os.path.abspath(os.path.dirname(os.getcwd()))
+        return os.path.abspath(os.path.join(os.getcwd()))
 
     @staticmethod
     def get_package_dir(package_name):

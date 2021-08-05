@@ -20,7 +20,6 @@ class LoggingTool:
     def get_logger(name):
         logger = logging.getLogger(name)
         logger.setLevel(logging.DEBUG)
-        # fh = self._file_handler()
         fh = logging.FileHandler(LoggingTool._get_log_path())
         fh.setLevel(logging.DEBUG)
         fh.setFormatter(logging.Formatter(LoggingTool._format))
@@ -32,6 +31,7 @@ class LoggingTool:
         path = PathTool.get_package_dir('log')
         today = datetime.date.today().strftime('%Y-%m-%d')
         dirs = path + '/' + today
+        print(path)
 
         if not os.path.exists(dirs):
             os.makedirs(dirs)
