@@ -1,0 +1,9 @@
+# Created by .ignore support plugin (hsz.mobi)
+/input
+/output
+/log
+run.ini
+/.idea
+/config
+settings.py
+/test
