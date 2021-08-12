@@ -31,7 +31,7 @@ class Login(Resource):
             if password == db_password:
                 dic = {'account': account, 'password': password}
                 token = TokenTool.encrypt(dic)
-                dic = {'state': 'success', 'token': token}
+                dic = {'state': 'success', 'account': account, 'token': token}
                 return jsonify(dic)
             else:
                 return jsonify({'state': 'false', 'info': '账号密码错误，请重新输入'})
@@ -39,7 +39,7 @@ class Login(Resource):
             token_account = TokenTool.decrypt(token)['account']
             token_password = TokenTool.decrypt(token)['password']
             if token_account == account and token_password == password:
-                dic = {'state': 'success', 'token': token}
+                dic = {'state': 'success', 'account': account, 'token': token}
                 return jsonify(dic)
             else:
                 return jsonify({'state': 'false', 'info': '用户信息过期，请重新登录'})
