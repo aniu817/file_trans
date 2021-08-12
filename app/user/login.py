@@ -5,24 +5,26 @@
 # @Desc: 登录
 import json
 
-from flask import Flask, request
-from flask import Blueprint
-from settings import Conf
+from flask_restful import Resource, reqparse
+from flask import request
 
 from tools.token_tool import TokenTool
 from tools.orm_tool import OrmTool
 from models.user import User
 
 
-login_bp = Blueprint("login", __name__)
+class Login(Resource):
 
-
-@login_bp.route("/login", methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        token = request.headers.get('token')
-        account = request.json.get('account')
-        password = request.json.get('password')
+    @staticmethod
+    def post():
+        parse = reqparse.RequestParser()
+        parse.add_argument('account', type=str, help='用户名不正确', trim=True)
+        parse.add_argument('password', type=str, help='密码不正确', trim=True)
+        parse.add_argument('token', type=str, help='密码不正确', trim=True)
+        args = parse.parse_args()
+        token = args.get('token')
+        account = args.get('account')
+        password = args.get('password')
         db_password = OrmTool.query_by_account(User, account)
 
         if len(token) == 0:

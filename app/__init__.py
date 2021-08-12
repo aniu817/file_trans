@@ -5,12 +5,17 @@
 # @Desc: 注册蓝图
 
 
-from flask import Flask
+from flask import Blueprint
+from flask_restful import Api
 
-from app.user.upload import upload_bp
-from app.user.login import login_bp
+from app.user.upload import Upload
+from app.user.login import Login
 
-my_flask = Flask(__name__)
+user = Blueprint('user', __name__, url_prefix='/user')
 
-my_flask.register_blueprint(upload_bp)
-my_flask.register_blueprint(login_bp)
+user_api = Api(user)
+
+user_api.add_resource(Upload, '/upload')
+user_api.add_resource(Login, '/login')
+
+

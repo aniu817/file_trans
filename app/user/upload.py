@@ -3,7 +3,7 @@
 # @Time : 2021/8/11 11:59
 # @Author : liu yang
 # @Desc: 文件转换
-from urllib import request
+
 
 from flask import Blueprint
 
@@ -14,23 +14,28 @@ from flask import Flask, request
 
 import os
 
+from werkzeug.datastructures import FileStorage
+
 from exception.defined_exception import DefinedException
 from tools.path_tool import PathTool
 
 from main.entry import Entry
 from tools.logging_tool import LoggingTool
-
-upload_bp = Blueprint("upload", __name__)
-
-file_logger = LoggingTool.get_logger(__name__)
+from flask_restful import Resource, reqparse
 
 
-@upload_bp.route("/upload", methods=['GET', 'POST'])
-def trans():
-    if request.method == 'POST':
+class Upload(Resource):
+
+    file_logger = LoggingTool.get_logger(__name__)
+
+    @staticmethod
+    def post():
         start = time.time()
         start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        file = request.files['file']
+        parse = reqparse.RequestParser()
+        parse.add_argument('file', type=FileStorage, location='files')
+        args = parse.parse_args()
+        file = args['file']
         if file is None:
             return "未上传文件"
 
@@ -41,25 +46,24 @@ def trans():
         if not os.path.exists(dirs):
             os.makedirs(dirs)
 
-        file_name = file.filename
-        full_path = dirs + '/' + file_name
+        full_path = dirs + '/' + file.filename
 
         try:
             file.save(full_path)
-            file_logger.info(file_name + '保存成功...')
+            Upload.file_logger.info(file.filename + '保存成功...')
         except DefinedException:
-            file_logger.error(file_name + '保存失败...')
+            Upload.file_logger.error(file.filename + '保存失败...')
             return '文件上传失败'
 
         try:
-            file_logger.info(file_name + '转换开始时间：' + start_time)
+            Upload.file_logger.info(file.filename + '转换开始时间：' + start_time)
             Entry(full_path).run()
         except DefinedException:
-            file_logger.error(file_name + '转换失败...')
+            Upload.file_logger.error(file.filename + '转换失败...')
             return '转换失败，请确认格式...'
 
         end = time.time()
 
-        file_logger.info(file_name + '完成转换，转换时长为: %f s' % (end - start))
+        Upload.file_logger.info(file.filename + '完成转换，转换时长为: %f s' % (end - start))
 
         return '完成转换'
