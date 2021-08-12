@@ -6,7 +6,7 @@
 import json
 
 from flask_restful import Resource, reqparse
-from flask import request
+from flask import jsonify
 
 from tools.token_tool import TokenTool
 from tools.orm_tool import OrmTool
@@ -34,7 +34,7 @@ class Login(Resource):
                 dic = {'state': 'success', 'token': token}
                 return json.dumps(dic)
             else:
-                return '账号密码错误，请重新输入'
+                return jsonify({'state': 'false', 'info': '账号密码错误，请重新输入'})
         else:
             token_account = TokenTool.decrypt(token)['account']
             token_password = TokenTool.decrypt(token)['password']
@@ -42,5 +42,5 @@ class Login(Resource):
                 dic = {'state': 'success', 'token': token}
                 return json.dumps(dic)
             else:
-                return '用户信息过期，请重新登录'
+                return jsonify({'state': 'false', 'info': '用户信息过期，请重新登录'})
 

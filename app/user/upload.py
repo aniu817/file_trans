@@ -5,12 +5,10 @@
 # @Desc: 文件转换
 
 
-from flask import Blueprint
-
 import datetime
 import time
 
-from flask import Flask, request
+from flask import jsonify
 
 import os
 
@@ -37,7 +35,7 @@ class Upload(Resource):
         args = parse.parse_args()
         file = args['file']
         if file is None:
-            return "未上传文件"
+            return jsonify({'state': 'false', 'info': '未上传文件'})
 
         file_path = PathTool.get_package_dir('input')
         today = datetime.date.today().strftime('%Y-%m-%d')
@@ -53,17 +51,17 @@ class Upload(Resource):
             Upload.file_logger.info(file.filename + '保存成功...')
         except DefinedException:
             Upload.file_logger.error(file.filename + '保存失败...')
-            return '文件上传失败'
+            return jsonify({'state': 'false', 'info': '文件上传失败'})
 
         try:
             Upload.file_logger.info(file.filename + '转换开始时间：' + start_time)
             Entry(full_path).run()
         except DefinedException:
             Upload.file_logger.error(file.filename + '转换失败...')
-            return '转换失败，请确认格式...'
+            return jsonify({'state': 'false', 'info': '转换失败，请确认格式'})
 
         end = time.time()
 
         Upload.file_logger.info(file.filename + '完成转换，转换时长为: %f s' % (end - start))
 
-        return '完成转换'
+        return jsonify({'state': 'success', 'info': '完成转换'})
