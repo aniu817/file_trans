@@ -41,5 +41,5 @@ class FinalUpload(Resource):
             return jsonify({'state': 'false', 'info': '未上传文件'})
 
         full_path = SavingTool.saving_file(file, 'file')
-        return jsonify({'state': 'success', 'info': '完成转换'})
+        return jsonify({'state': 'success', 'info': '完成上传'})
 
