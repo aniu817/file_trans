@@ -12,6 +12,7 @@ from flask import jsonify
 
 import os
 
+from flask_restx import Namespace
 from werkzeug.datastructures import FileStorage
 
 from exception.defined_exception import DefinedException
@@ -19,9 +20,14 @@ from tools.path_tool import PathTool
 
 from main.entry import Entry
 from tools.logging_tool import LoggingTool
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, reqparse
+from tools.saving_tool import SavingTool
 
 
+ns_upload = Namespace('upload', description='上传原始文件')
+
+
+@ns_upload.route('', strict_slashes=False)
 class Upload(Resource):
 
     file_logger = LoggingTool.get_logger(__name__)
@@ -37,21 +43,7 @@ class Upload(Resource):
         if file is None:
             return jsonify({'state': 'false', 'info': '未上传文件'})
 
-        file_path = PathTool.get_package_dir('input')
-        today = datetime.date.today().strftime('%Y-%m-%d')
-        dirs = file_path + '/' + today
-
-        if not os.path.exists(dirs):
-            os.makedirs(dirs)
-
-        full_path = dirs + '/' + file.filename
-
-        try:
-            file.save(full_path)
-            Upload.file_logger.info(file.filename + '保存成功...')
-        except DefinedException:
-            Upload.file_logger.error(file.filename + '保存失败...')
-            return jsonify({'state': 'false', 'info': '文件上传失败'})
+        full_path = SavingTool.saving_file(file, 'input')
 
         try:
             Upload.file_logger.info(file.filename + '转换开始时间：' + start_time)
@@ -64,4 +56,4 @@ class Upload(Resource):
 
         Upload.file_logger.info(file.filename + '完成转换，转换时长为: %f s' % (end - start))
 
-        return jsonify({'state': 'success', 'info': '完成转换'})
+        return jsonify({'state': 'success', 'info': '完成转换', 'location': full_path})

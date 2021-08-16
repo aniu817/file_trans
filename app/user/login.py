@@ -5,14 +5,19 @@
 # @Desc: 登录
 import json
 
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, reqparse
 from flask import jsonify
+from flask_restx import Namespace
 
 from tools.token_tool import TokenTool
 from tools.orm_tool import OrmTool
 from models.user import User
 
 
+ns_login = Namespace('login', description='登录')
+
+
+@ns_login.route('', strict_slashes=False)
 class Login(Resource):
 
     @staticmethod
