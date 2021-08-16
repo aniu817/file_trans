@@ -10,6 +10,7 @@ from flask_restx import Api
 from app.user.upload import ns_upload
 from app.user.login import ns_login
 from app.user.final_upload import ns_final_upload
+from app.user.upload import ns_download
 
 
 api_user = Blueprint('api_user', __name__, url_prefix='/user')
@@ -24,3 +25,4 @@ api = Api(
 api.add_namespace(ns_upload)
 api.add_namespace(ns_login)
 api.add_namespace(ns_final_upload)
+api.add_namespace(ns_download)
